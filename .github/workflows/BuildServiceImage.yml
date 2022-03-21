@@ -22,7 +22,7 @@ on:
 jobs:
   build:
     name: Build and Deploy
-    if: github.event.inputs.version != 'NaN'
+    if: inputs.version != 'NaN'
     runs-on: ubuntu-latest
     env:
       IMAGE_TAG: 'NaN'
@@ -41,11 +41,8 @@ jobs:
         username: ${{ secrets.Registry_Login }}
         password: ${{ secrets.Registry_Password }}
   
-    - name: Create Tag of image
-      run: |
-        echo "IMAGE_TAG=${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ github.event.inputs.version }}" >> $GITHUB_ENV
-        echo $IMAGE_TAG
-        echo ${{ github.event.inputs.version }}
+    - name: Create Tag for image
+      run: echo "IMAGE_TAG=${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ inputs.version }}" >> $GITHUB_ENV
 
     - name: Build and push
       uses: docker/build-push-action@v2

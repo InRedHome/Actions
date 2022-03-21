@@ -22,12 +22,12 @@ on:
 jobs:
   deploy:
     name: Update Docker image in Swarm
-    if: github.event.inputs.version != 'NaN'
+    if: inputs.version != 'NaN'
     runs-on: self-hosted
     env:
       IS_CONTAINS: 'false'
-      IMAGE_VERSION: ${{ github.event.inputs.version }}
-      SERVICE_NAME: ${{ github.event.inputs.service_name }}
+      IMAGE_VERSION: ${{ inputs.version }}
+      SERVICE_NAME: ${{ inputs.service_name }}
     steps:
       - name: Validate image in registry
         if: env.IMAGE_VERSION != 'NaN'
