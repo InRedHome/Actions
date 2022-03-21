@@ -1,0 +1,63 @@
+name: Build image and push to Registry (Github Runner)
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: "Image tag"
+        default: 'NaN'
+    secrets:
+      Registry_Path:
+        required: true
+      Registry_Login:
+        required: true
+      Registry_Password:
+        required: true
+      Image_Name:
+        required: true
+      Private_Login:
+        required: true
+      Private_PAT:
+        required: true
+        
+
+jobs:
+  build:
+    name: Build and Deploy
+    if: inputs.version != 'NaN'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to Docker Registry
+      uses: docker/login-action@v1 
+      with:
+        registry: https://${{ secrets.Registry_Path }}
+        username: ${{ secrets.Registry_Login }}
+        password: ${{ secrets.Registry_Password }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      id: builder
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ inputs.version }}
+        build-args: --build-arg Nuget_UserName=${{ secret.Private_Login }} --build-arg Nuget_Password=${{ secrets.Private_PAT }}
+        # cache-from: type=registry,ref=user/app:buildcache
+        # cache-to: type=registry,ref=user/app:buildcache,mode=max
+
+    - name: Pull image info to artifact file 
+      run: echo "${{ steps.builder.outputs.metadata }}" > image_info.txt
+      
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Build result
+        path: image_info.txt
