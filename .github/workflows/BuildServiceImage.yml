@@ -24,8 +24,6 @@ jobs:
     name: Build and Deploy
     if: github.event.inputs.version != 'NaN'
     runs-on: ubuntu-latest
-    env:
-      SEMVER: ${{ github.event.inputs.version }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -46,6 +44,6 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.Image_Name }}:$SEMVER
+        tags: "${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ github.event.inputs.version }}"
         # cache-from: type=registry,ref=user/app:buildcache
         # cache-to: type=registry,ref=user/app:buildcache,mode=max
