@@ -8,6 +8,16 @@ on:
         type: string
         description: "Image tag"
         default: 'NaN'
+    secrets:
+      REGISTRY_PATH:
+        required: true
+      REGISTRY_LOGIN:
+        required: true
+      REGISTRY_PASSWORD:
+        required: true
+      IMAGE_NAME:
+        required: true
+        
 
 jobs:
   build:

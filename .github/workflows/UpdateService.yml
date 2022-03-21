@@ -7,6 +7,17 @@ on:
         required: true
         default: 'NaN'
         type: string
+    secrets:
+      REGISTRY_PATH:
+        required: true
+      REGISTRY_LOGIN:
+        required: true
+      REGISTRY_PASSWORD:
+        required: true
+      IMAGE_NAME:
+        required: true
+      SWARM_SERVICE_NAME:
+        required: true
 
 jobs:
   deploy:
