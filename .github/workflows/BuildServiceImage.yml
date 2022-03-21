@@ -46,9 +46,22 @@ jobs:
 
     - name: Build and push
       uses: docker/build-push-action@v2
+      id: builder
       with:
         context: .
         push: true
         tags: ${{ env.IMAGE_TAG }}
         # cache-from: type=registry,ref=user/app:buildcache
         # cache-to: type=registry,ref=user/app:buildcache,mode=max
+
+    - name: Pull image info to artifact file 
+      run: |
+        echo "${{ steps.builder.outputs.metadata }}" > image_info.txt
+        echo "${{ env.IMAGE_TAG }}" > image_tag.txt
+      
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Build result
+        path: |
+          image_info.txt
+          image_tag.txt

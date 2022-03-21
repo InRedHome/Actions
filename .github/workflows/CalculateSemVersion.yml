@@ -30,8 +30,9 @@ jobs:
         useConfigFile: true
         configFilePath: .github/VersionConfig.yml
 
-    - run: echo "$GITVERSION_SEMVER" > caluclated_version.txt
+    - name: Pull semantic version to artifact file 
+      run: echo "$GITVERSION_SEMVER" > semantic_version.txt
     - uses: actions/upload-artifact@v3
       with:
-        name: Version
-        path: caluclated_version.txt
+        name: Build result
+        path: semantic_version.txt
