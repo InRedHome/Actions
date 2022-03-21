@@ -1,0 +1,35 @@
+name: Update host service (Self-hosted)
+
+on: 
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        default: 'NaN'
+        type: string
+      service_name:
+        required: true
+        default: ' '
+        type: string
+
+jobs:
+  deploy:
+    name: Update Docker image in Swarm
+    if: github.event.inputs.version != 'NaN' && github.event.inputs.version != ' '
+    runs-on: self-hosted
+    env:
+      IS_CONTAINS: 'false'
+      IMAGE_VERSION: ${{ github.event.inputs.version }}
+      SERVICE_NAME: ${{ github.event.inputs.service_name }}
+    steps:
+      - name: Validate image in registry
+        if: env.IMAGE_VERSION != 'NaN'
+        shell: bash
+        run: |
+          REP_INFO=$(curl -u ${{ secrets.REGISTRY_LOGIN }}:${{ secrets.REGISTRY_PASSWORD }} https://${{ secrets.REGISTRY_PATH }}/v2/${{ secrets.IMAGE_NAME }}/tags/list)
+          if [[ "$REP_INFO" == *"$IMAGE_VERSION"* ]]; then
+            echo "IS_CONTAINS=true" >> $GITHUB_ENV
+          fi
+      - name: Update Swarm service
+        if: env.IS_CONTAINS == 'true'
+        run: sudo docker service update $SERVICE_NAME --with-registry-auth --image ${{ secrets.REGISTRY_PATH }}/${{ secrets.IMAGE_NAME }}:$IMAGE_VERSION

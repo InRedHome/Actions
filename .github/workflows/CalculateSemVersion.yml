@@ -1,0 +1,37 @@
+name: Calculate version (Self-hosted)
+
+on:
+  workflow_call:
+    outputs:
+      version:
+        description: "Current version"
+        value: ${{ jobs.calculate-version.outputs.semVer }}
+
+jobs:
+  calculate-version:
+    name: Calculate Semantic Version
+    runs-on: self-hosted
+    outputs:
+      semVer: ${{ steps.gitversion.outputs.semVer }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.13
+      with:
+        versionSpec: '5.x'
+    - name: Determine Version
+      id:   gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.13
+      with:
+        useConfigFile: true
+        configFilePath: .github/VersionConfig.yml
+
+    - run: echo "$GITVERSION_SEMVER" > caluclated_version.txt
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Version
+        path: caluclated_version.txt
