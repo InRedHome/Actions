@@ -50,7 +50,7 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ inputs.version }}
-        build-args: --build-arg Nuget_UserName=${{ secret.Private_Login }} --build-arg Nuget_Password=${{ secrets.Private_PAT }}
+        build-args: --build-arg Nuget_UserName=${{ secrets.Private_Login }} --build-arg Nuget_Password=${{ secrets.Private_PAT }}
         # cache-from: type=registry,ref=user/app:buildcache
         # cache-to: type=registry,ref=user/app:buildcache,mode=max
 
