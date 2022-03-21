@@ -22,7 +22,7 @@ on:
 jobs:
   deploy:
     name: Update Docker image in Swarm
-    if: github.event.inputs.version != 'NaN' && secrets.Swarm_Service_Name != ' '
+    if: ${{ github.event.inputs.version != 'NaN' &&  secrets.Swarm_Service_Name != ' ' }}
     runs-on: self-hosted
     env:
       IS_CONTAINS: 'false'
