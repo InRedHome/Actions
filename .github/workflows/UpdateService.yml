@@ -8,21 +8,21 @@ on:
         default: 'NaN'
         type: string
     secrets:
-      REGISTRY_PATH:
+      Registry_Path:
         required: true
-      REGISTRY_LOGIN:
+      Registry_Login:
         required: true
-      REGISTRY_PASSWORD:
+      Registry_Password:
         required: true
-      IMAGE_NAME:
+      Image_Name:
         required: true
-      SWARM_SERVICE_NAME:
+      Swarm_Service_Name:
         required: true
 
 jobs:
   deploy:
     name: Update Docker image in Swarm
-    if: github.event.inputs.version != 'NaN' && secrets.SWARM_SERVICE_NAME != ' '
+    if: github.event.inputs.version != 'NaN' && secrets.Swarm_Service_Name != ' '
     runs-on: self-hosted
     env:
       IS_CONTAINS: 'false'
@@ -33,10 +33,10 @@ jobs:
         if: env.IMAGE_VERSION != 'NaN'
         shell: bash
         run: |
-          REP_INFO=$(curl -u ${{ secrets.REGISTRY_LOGIN }}:${{ secrets.REGISTRY_PASSWORD }} https://${{ secrets.REGISTRY_PATH }}/v2/${{ secrets.IMAGE_NAME }}/tags/list)
+          REP_INFO=$(curl -u ${{ secrets.Registry_Login }}:${{ secrets.Registry_Password }} https://${{ secrets.Registry_Path }}/v2/${{ secrets.Image_Name }}/tags/list)
           if [[ "$REP_INFO" == *"$IMAGE_VERSION"* ]]; then
             echo "IS_CONTAINS=true" >> $GITHUB_ENV
           fi
       - name: Update Swarm service
         if: env.IS_CONTAINS == 'true'
-        run: sudo docker service update ${{ secrets.SWARM_SERVICE_NAME }} --with-registry-auth --image ${{ secrets.REGISTRY_PATH }}/${{ secrets.IMAGE_NAME }}:$IMAGE_VERSION
+        run: sudo docker service update ${{ secrets.Swarm_Service_Name }} --with-registry-auth --image ${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:$IMAGE_VERSION

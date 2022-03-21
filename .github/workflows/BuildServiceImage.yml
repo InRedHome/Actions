@@ -9,13 +9,13 @@ on:
         description: "Image tag"
         default: 'NaN'
     secrets:
-      REGISTRY_PATH:
+      Registry_Path:
         required: true
-      REGISTRY_LOGIN:
+      Registry_Login:
         required: true
-      REGISTRY_PASSWORD:
+      Registry_Password:
         required: true
-      IMAGE_NAME:
+      Image_Name:
         required: true
         
 
@@ -37,15 +37,15 @@ jobs:
     - name: Login to Docker Registry
       uses: docker/login-action@v1 
       with:
-        registry: https://${{ secrets.REGISTRY_PATH }}
-        username: ${{ secrets.REGISTRY_LOGIN }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
+        registry: https://${{ secrets.Registry_Path }}
+        username: ${{ secrets.Registry_Login }}
+        password: ${{ secrets.Registry_Password }}
   
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
         context: .
         push: true
-        tags: ${{ secrets.REGISTRY_PATH }}/${{ secrets.IMAGE_NAME }}:$SEMVER
+        tags: ${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:$SEMVER
         # cache-from: type=registry,ref=user/app:buildcache
         # cache-to: type=registry,ref=user/app:buildcache,mode=max

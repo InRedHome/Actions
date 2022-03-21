@@ -6,15 +6,6 @@ on:
       version:
         description: "Current version"
         value: ${{ jobs.calculate-version.outputs.semVer }}
-    secrets:
-      REGISTRY_PATH:
-        required: true
-      REGISTRY_LOGIN:
-        required: true
-      REGISTRY_PASSWORD:
-        required: true
-      IMAGE_NAME:
-        required: true
 
 jobs:
   calculate-version:
