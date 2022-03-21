@@ -7,15 +7,11 @@ on:
         required: true
         default: 'NaN'
         type: string
-      service_name:
-        required: true
-        default: ' '
-        type: string
 
 jobs:
   deploy:
     name: Update Docker image in Swarm
-    if: github.event.inputs.version != 'NaN' && github.event.inputs.version != ' '
+    if: github.event.inputs.version != 'NaN' && secrets.SWARM_SERVICE_NAME != ' '
     runs-on: self-hosted
     env:
       IS_CONTAINS: 'false'
@@ -32,4 +28,4 @@ jobs:
           fi
       - name: Update Swarm service
         if: env.IS_CONTAINS == 'true'
-        run: sudo docker service update $SERVICE_NAME --with-registry-auth --image ${{ secrets.REGISTRY_PATH }}/${{ secrets.IMAGE_NAME }}:$IMAGE_VERSION
+        run: sudo docker service update ${{ secrets.SWARM_SERVICE_NAME }} --with-registry-auth --image ${{ secrets.REGISTRY_PATH }}/${{ secrets.IMAGE_NAME }}:$IMAGE_VERSION
