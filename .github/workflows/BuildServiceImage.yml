@@ -44,7 +44,8 @@ jobs:
     - name: Create Tag of image
       run: |
         echo "IMAGE_TAG=${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ github.event.inputs.version }}" >> $GITHUB_ENV
-        echo ${{ env.IMAGE_TAG }}
+        echo $IMAGE_TAG
+        echo ${{ github.event.inputs.version }}
 
     - name: Build and push
       uses: docker/build-push-action@v2
