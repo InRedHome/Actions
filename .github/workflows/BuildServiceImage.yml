@@ -8,6 +8,11 @@ on:
         type: string
         description: "Image tag"
         default: 'NaN'
+      docker_build_args:
+        required: false
+        type: string
+        description: "Arguments for docker build action"
+        default: ''
     secrets:
       Registry_Path:
         required: true
@@ -46,6 +51,7 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ inputs.version }}
+        build-args: ${{ inputs.docker_build_args }}
         # cache-from: type=registry,ref=user/app:buildcache
         # cache-to: type=registry,ref=user/app:buildcache,mode=max
 
