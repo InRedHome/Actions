@@ -8,6 +8,11 @@ on:
         type: string
         description: "Image tag"
         default: 'NaN'
+      use_lfs:
+        required: false
+        description: "Additional tags for builded image"
+        type: boolean
+        default: false
     secrets:
       Registry_Path:
         required: true
@@ -28,7 +33,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
+      if: ${{ inputs.use_lfs == 'false' }}
       uses: actions/checkout@v3
+    - name: Checkout with LFS and Cache
+      if: ${{ inputs.use_lfs == 'true' }}
+      uses: nschloe/action-checkout-with-lfs-cache@v1
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
     - name: Set up Docker Buildx
