@@ -22,9 +22,12 @@ on:
         required: true
       Image_Name:
         required: true
-      docker_build_args:
+      Docker_Build_Args:
         required: false
-        description: "Arguments for docker build action"
+        description: "Arguments for docker buildx action"
+      Docker_Secrets:
+        required: false
+        description: "Secrets for docker buildx action"
 
 jobs:
   build:
@@ -57,7 +60,8 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ inputs.version }}
-        build-args: ${{ secrets.docker_build_args }}
+        build-args: ${{ secrets.Docker_Build_Args }}
+        secrets: ${{ secrets.Docker_Secrets }}
         # cache-from: type=registry,ref=user/app:buildcache
         # cache-to: type=registry,ref=user/app:buildcache,mode=max
 
