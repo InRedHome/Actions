@@ -60,8 +60,10 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ inputs.version }}
-        build-args: ${{ secrets.Docker_Build_Args }}
-        secrets: ${{ secrets.Docker_Secrets }}
+        build-args: |
+          ${{ secrets.Docker_Build_Args }}
+        secrets: |
+          ${{ secrets.Docker_Secrets }}
         # cache-from: type=registry,ref=user/app:buildcache
         # cache-to: type=registry,ref=user/app:buildcache,mode=max
 
