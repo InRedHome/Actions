@@ -1,0 +1,49 @@
+name: Update host service (Self-hosted)
+
+on: 
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        default: 'NaN'
+        type: string
+    secrets:
+      Registry_Path:
+        required: true
+      Registry_Login:
+        required: true
+      Registry_Password:
+        required: true
+      Image_Name:
+        required: true
+      Update_Webhook_Url:
+        required: true
+
+jobs:
+  deploy:
+    name: Update Docker image in Swarm
+    if: inputs.version != 'NaN'
+    runs-on: self-hosted
+    env:
+      IS_CONTAINS: 'false'
+      IMAGE_VERSION: ${{ inputs.version }}
+      SERVICE_NAME: ${{ inputs.service_name }}
+    steps:
+      - name: Validate image in registry
+        if: env.IMAGE_VERSION != 'NaN'
+        shell: bash
+        run: |
+          REP_INFO=$(curl -u ${{ secrets.Registry_Login }}:${{ secrets.Registry_Password }} https://${{ secrets.Registry_Path }}/v2/${{ secrets.Image_Name }}/tags/list)
+          if [[ "$REP_INFO" == *"$IMAGE_VERSION"* ]]; then
+            echo "IS_CONTAINS=true" >> $GITHUB_ENV
+          fi
+      - name: Update service in Swarm
+        if: env.IS_CONTAINS == 'true'
+        id: updateRequest
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.Update_Webhook_Url }}?tag=${{ inputs.version }}
+          method: 'POST'
+      - name: Show Response
+        if: env.IS_CONTAINS == 'true'
+        run: echo ${{ steps.updateRequest.outputs.response }}
