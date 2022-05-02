@@ -13,6 +13,11 @@ on:
         description: "Additional tags for builded image"
         type: boolean
         default: false
+      Dockerfile_Name:
+        required: false
+        description: "Name of Dockerfile"
+        type: string
+        default: 'Dockerfile'
     secrets:
       Registry_Path:
         required: true
@@ -59,6 +64,7 @@ jobs:
       with:
         context: .
         push: true
+        file: ${{ inputs.Dockerfile_Name }}
         tags: ${{ secrets.Registry_Path }}/${{ secrets.Image_Name }}:${{ inputs.version }}
         build-args: |
           ${{ secrets.Docker_Build_Args }}
