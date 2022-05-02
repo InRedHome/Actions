@@ -1,4 +1,4 @@
-name: Update host service (Self-hosted)
+name: Update host service (Github Runner)
 
 on: 
   workflow_call:
@@ -23,7 +23,7 @@ jobs:
   deploy:
     name: Update Docker image in Swarm
     if: inputs.version != 'NaN'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       IS_CONTAINS: 'false'
       IMAGE_VERSION: ${{ inputs.version }}

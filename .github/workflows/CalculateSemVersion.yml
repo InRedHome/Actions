@@ -1,4 +1,4 @@
-name: Calculate version (Self-hosted)
+name: Calculate version (Github Runner)
 
 on:
   workflow_call:
@@ -10,7 +10,7 @@ on:
 jobs:
   calculate-version:
     name: Calculate Semantic Version
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       semVer: ${{ steps.gitversion.outputs.semVer }}
 
