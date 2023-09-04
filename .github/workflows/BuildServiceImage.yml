@@ -42,7 +42,7 @@ jobs:
     steps:
     - name: Checkout
       if: ${{ inputs.use_lfs == false }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Checkout with LFS and Cache
       if: ${{ inputs.use_lfs == true }}
       uses: nschloe/action-checkout-with-lfs-cache@v1
